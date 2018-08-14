@@ -14,6 +14,7 @@ import org.springframework.social.linkedin.api.LinkedIn;
 import com.login.autologin.Autologin;
 import com.login.model.UserBean;
 import com.login.repository.UserRepository;
+import org.springframework.social.twitter.api.Twitter;
 
 @Configuration
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -23,6 +24,8 @@ public class BaseProvider {
     private Google google;
     private LinkedIn linkedIn;
     private ConnectionRepository connectionRepository;
+    private Twitter twitter;
+
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -33,55 +36,63 @@ public class BaseProvider {
     @Autowired
     protected Autologin autologin;
 
-    public BaseProvider(Facebook facebook, Google google, LinkedIn linkedIn, ConnectionRepository connectionRepository) {
-	this.facebook = facebook;
-	this.connectionRepository = connectionRepository;
-	this.google = google;
-	this.linkedIn = linkedIn;
+    public BaseProvider(Facebook facebook, Google google, LinkedIn linkedIn, ConnectionRepository connectionRepository, Twitter twitter) {
+        this.facebook = facebook;
+        this.google = google;
+        this.linkedIn = linkedIn;
+        this.connectionRepository = connectionRepository;
+        this.twitter = twitter;
     }
 
     protected void saveUserDetails(UserBean userBean) {
-	if (StringUtils.isNotEmpty(userBean.getPassword())) {
-	    userBean.setPassword(bCryptPasswordEncoder.encode(userBean.getPassword()));
-	}
-	userRepository.save(userBean);
+        if (StringUtils.isNotEmpty(userBean.getPassword())) {
+            userBean.setPassword(bCryptPasswordEncoder.encode(userBean.getPassword()));
+        }
+        userRepository.save(userBean);
 
     }
 
     public void autoLoginUser(UserBean userBean) {
-	autologin.setSecuritycontext(userBean);
+        autologin.setSecuritycontext(userBean);
     }
 
     public Facebook getFacebook() {
-	return facebook;
+        return facebook;
     }
 
     public void setFacebook(Facebook facebook) {
-	this.facebook = facebook;
+        this.facebook = facebook;
     }
 
     public ConnectionRepository getConnectionRepository() {
-	return connectionRepository;
+        return connectionRepository;
     }
 
     public void setConnectionRepository(ConnectionRepository connectionRepository) {
-	this.connectionRepository = connectionRepository;
+        this.connectionRepository = connectionRepository;
     }
 
     public Google getGoogle() {
-	return google;
+        return google;
     }
 
     public void setGoogle(Google google) {
-	this.google = google;
+        this.google = google;
     }
 
     public LinkedIn getLinkedIn() {
-	return linkedIn;
+        return linkedIn;
     }
 
     public void setLinkedIn(LinkedIn linkedIn) {
-	this.linkedIn = linkedIn;
+        this.linkedIn = linkedIn;
     }
 
+    public Twitter getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
+    }
 }

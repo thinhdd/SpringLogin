@@ -46,7 +46,7 @@ public class GoogleProvider   {
 		userform.setEmail(googleUser.getAccountEmail());
 		userform.setFirstName(googleUser.getGivenName());
 		userform.setLastName(googleUser.getFamilyName());
-		userform.setImage(googleUser.getImageUrl());
+		userform.setImage("");
 		userform.setProvider(GOOGLE);
 	}
 

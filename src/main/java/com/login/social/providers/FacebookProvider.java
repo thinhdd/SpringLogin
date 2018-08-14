@@ -38,14 +38,13 @@ public class FacebookProvider  {
 
 	protected void populateUserDetailsFromFacebook(UserBean userForm) {
 		Facebook facebook = baseProvider.getFacebook();
-		User user = facebook.userOperations().getUserProfile();
+        String [] fields = { "id","cover","birthday","email","gender","first_name","last_name"};
+        User user = facebook.fetchObject("me", User.class, fields);
 		userForm.setEmail(user.getEmail());
 		userForm.setFirstName(user.getFirstName());
 		userForm.setLastName(user.getLastName());
 		userForm.setImage(user.getCover().getSource());
 		userForm.setProvider(FACEBOOK);
 	}
-
-	 
 
 }
