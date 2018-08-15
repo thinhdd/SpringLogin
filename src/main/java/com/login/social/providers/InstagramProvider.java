@@ -15,12 +15,11 @@ public class InstagramProvider {
     @Autowired
     BaseProvider baseProvider ;
 
-	public String getInstagramUserData(String code, Model model, UserBean userForm) throws Exception {
+	public UserBean getInstagramUserData(String code, UserBean userForm) throws Exception {
         populateUserDetailsFromInstagram(code, userForm);
         baseProvider.saveUserDetails(userForm);
         baseProvider.autoLoginUser(userForm);
-        model.addAttribute("loggedInUser",userForm);
-        return "secure/user";
+        return userForm;
     }
 
     public void populateUserDetailsFromInstagram(String code, UserBean userBean ) throws Exception {
@@ -28,7 +27,7 @@ public class InstagramProvider {
         instagramObj.build();
         Instagram instagram = instagramObj.getInstagram(code);
         String token = instagram.getAccessToken().toString();
-        System.out.println(token);
+        userBean.setAccesstoken(token);
         UserInfo userInfo = instagram.getCurrentUserInfo();
         userBean.setEmail(userInfo.getData().getUsername());
         userBean.setFirstName(userInfo.getData().getFirstName());

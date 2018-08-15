@@ -13,30 +13,24 @@ import com.login.model.UserBean;
 @Service
 public class GoogleProvider   {
 
-	private static final String REDIRECT_CONNECT_GOOGLE = "redirect:/login";
 	private static final String GOOGLE = "google";
 
 	@Autowired
-    	BaseProvider baseProvider ;
-    	
+    BaseProvider baseProvider ;
 
-	public String getGoogleUserData(Model model, UserBean userForm) {
-
+	public UserBean getGoogleUserData(UserBean userForm) {
 		ConnectionRepository connectionRepository = baseProvider.getConnectionRepository();
 		if (connectionRepository.findPrimaryConnection(Google.class) == null) {
-			return REDIRECT_CONNECT_GOOGLE;
+			return null;
 		}
 		String accessToken = connectionRepository.getPrimaryConnection(Google.class).createData().getAccessToken();
 		userForm.setAccesstoken(accessToken);
 		populateUserDetailsFromGoogle(userForm);
 		//Save the details in DB
 		baseProvider.saveUserDetails(userForm);
-		
 		//Login the User
 		baseProvider.autoLoginUser(userForm);
-				
-		model.addAttribute("loggedInUser",userForm);
-		return "secure/user";
+		return userForm;
 	}
 
 

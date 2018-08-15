@@ -14,17 +14,16 @@ import com.login.model.UserBean;
 public class FacebookProvider  {
 
 	private static final String FACEBOOK = "facebook";
-	private static final String REDIRECT_LOGIN = "redirect:/login";
 
     	@Autowired
     	BaseProvider baseProvider ;
     	
 
-	public String getFacebookUserData(Model model, UserBean userForm) {
+	public UserBean getFacebookUserData(UserBean userForm) {
 
 		ConnectionRepository connectionRepository = baseProvider.getConnectionRepository();
 		if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
-			return REDIRECT_LOGIN;
+			return null;
 		}
 		String accessToken = connectionRepository.getPrimaryConnection(Facebook.class).createData().getAccessToken();
 		userForm.setAccesstoken(accessToken);
@@ -34,8 +33,7 @@ public class FacebookProvider  {
 		baseProvider.saveUserDetails(userForm);
 		//Login the User
 		baseProvider.autoLoginUser(userForm);
-		model.addAttribute("loggedInUser",userForm);
-		return "secure/user";
+		return userForm;
 	}
 
 	protected void populateUserDetailsFromFacebook(UserBean userForm) {
