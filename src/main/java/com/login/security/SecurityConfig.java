@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.logout()
 				.permitAll();
-		//http.csrf().disable();
+		http.csrf().disable();
 	}
 	
 	@Bean

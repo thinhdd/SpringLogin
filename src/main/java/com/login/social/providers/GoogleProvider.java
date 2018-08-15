@@ -1,9 +1,8 @@
 package com.login.social.providers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.plus.Person;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,8 @@ public class GoogleProvider   {
 		if (connectionRepository.findPrimaryConnection(Google.class) == null) {
 			return REDIRECT_CONNECT_GOOGLE;
 		}
-
+		String accessToken = connectionRepository.getPrimaryConnection(Google.class).createData().getAccessToken();
+		userForm.setAccesstoken(accessToken);
 		populateUserDetailsFromGoogle(userForm);
 		//Save the details in DB
 		baseProvider.saveUserDetails(userForm);

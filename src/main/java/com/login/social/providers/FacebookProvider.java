@@ -26,6 +26,8 @@ public class FacebookProvider  {
 		if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
 			return REDIRECT_LOGIN;
 		}
+		String accessToken = connectionRepository.getPrimaryConnection(Facebook.class).createData().getAccessToken();
+		userForm.setAccesstoken(accessToken);
 		//Populate the Bean
 		populateUserDetailsFromFacebook(userForm);
 		//Save the details in DB

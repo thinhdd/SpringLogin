@@ -4,39 +4,41 @@ package com.login.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
 
 @Entity(name = "user")
 @Table(name = "user")
 public class UserBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-	@NotNull(message = "Email  cannot be empty")
-	@Email(message = "Email Format is not valid")
-	@Size(min = 3, max = 30, message = "Email can not be empty")
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	
 	private String email;
 	
-	@NotNull(message = "First Name cannot be empty")
-	@Size(min = 3, max = 30, message = "First Name cannot be less than 3 characters")
 	private String firstName;
-
-	@NotNull(message = "Last Name cannot be empty")
-	@Size(min = 3, max = 30, message = "Last Name cannot be less than 3 characters")
+	
 	private String lastName;
 
 	private String title;
 	private String country;
 	private String password;
 	
+	private String accesstoken;
 	
+	public String getAccesstoken() {
+		return accesstoken;
+	}
+
+	public void setAccesstoken(String accesstoken) {
+		this.accesstoken = accesstoken;
+	}
+
 	@Transient
 	private String passwordConfirm;	
 	private String provider;

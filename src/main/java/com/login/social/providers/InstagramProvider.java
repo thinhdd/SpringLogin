@@ -1,13 +1,13 @@
 package com.login.social.providers;
 
-import com.login.config.InstagramBuildService;
-import com.login.model.UserBean;
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.users.basicinfo.UserInfo;
-import org.jinstagram.exceptions.InstagramException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+
+import com.login.config.InstagramBuildService;
+import com.login.model.UserBean;
 
 @Service
 public class InstagramProvider {
@@ -15,9 +15,10 @@ public class InstagramProvider {
     @Autowired
     BaseProvider baseProvider ;
 
-    public String getInstagramUserData(String code, Model model, UserBean userForm) throws Exception {
+	public String getInstagramUserData(String code, Model model, UserBean userForm) throws Exception {
         populateUserDetailsFromInstagram(code, userForm);
         baseProvider.saveUserDetails(userForm);
+        baseProvider.autoLoginUser(userForm);
         model.addAttribute("loggedInUser",userForm);
         return "secure/user";
     }
@@ -26,6 +27,8 @@ public class InstagramProvider {
         InstagramBuildService instagramObj = new InstagramBuildService();
         instagramObj.build();
         Instagram instagram = instagramObj.getInstagram(code);
+        String token = instagram.getAccessToken().toString();
+        System.out.println(token);
         UserInfo userInfo = instagram.getCurrentUserInfo();
         userBean.setEmail(userInfo.getData().getUsername());
         userBean.setFirstName(userInfo.getData().getFirstName());

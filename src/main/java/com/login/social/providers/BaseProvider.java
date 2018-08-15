@@ -1,5 +1,7 @@
 package com.login.social.providers;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -43,13 +45,13 @@ public class BaseProvider {
         this.connectionRepository = connectionRepository;
         this.twitter = twitter;
     }
-
+    
+    @Transactional
     protected void saveUserDetails(UserBean userBean) {
         if (StringUtils.isNotEmpty(userBean.getPassword())) {
             userBean.setPassword(bCryptPasswordEncoder.encode(userBean.getPassword()));
         }
         userRepository.save(userBean);
-
     }
 
     public void autoLoginUser(UserBean userBean) {
