@@ -28,7 +28,6 @@ public class BaseProvider {
     private ConnectionRepository connectionRepository;
     private Twitter twitter;
 
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 

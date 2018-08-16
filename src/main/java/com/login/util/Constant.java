@@ -15,4 +15,10 @@ public class Constant {
         public static final String responseType = "response_type";
         public static final String paramAuthorize = "state=12345abcde&scope=openid%20profile&nonce=09876xyz";
     }
+    public class InstagramConst{
+        public static final String urlAuthorize = "https://www.instagram.com/oauth/authorize/";
+        public static final String redirectUri = "redirect_uri";
+        public static final String clientId = "client_id";
+        public static final String paramAuthorize = "response_type=code";
+    }
 }

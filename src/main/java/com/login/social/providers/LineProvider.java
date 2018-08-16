@@ -24,6 +24,8 @@ public class LineProvider {
     @Autowired
     LineConfig lineConfig;
 
+    private static final String LINE = "line";
+
     public UserBean loginLine(String code, UserBean userBean){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -41,6 +43,19 @@ public class LineProvider {
         userBean.setFirstName(lineEntityProfile.getDisplayName());
         userBean.setImage(lineEntityProfile.getPictureUrl());
         userBean.setAccesstoken(lineEntityRepos.getAccess_token());
+        userBean.setProvider(LINE);
+        return userBean;
+    }
+
+    public UserBean loginLineByToken(String token, UserBean userBean){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(Constant.LineConst.authorization, Constant.LineConst.bearer + token);
+        HttpEntity<HttpHeaders> httpEntity = new HttpEntity<>(headers);
+        LineEntityProfile lineEntityProfile = restTemplate.exchange(Constant.LineConst.urlProfile, HttpMethod.GET, httpEntity, LineEntityProfile.class).getBody();
+        userBean.setFirstName(lineEntityProfile.getDisplayName());
+        userBean.setImage(lineEntityProfile.getPictureUrl());
+        userBean.setAccesstoken(token);
+        userBean.setProvider(LINE);
         return userBean;
     }
 }

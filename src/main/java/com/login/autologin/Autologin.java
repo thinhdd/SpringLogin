@@ -14,8 +14,6 @@ import com.login.model.UserBean;
 
 @Service
 public class Autologin {
-
-    
     public void setSecuritycontext(UserBean userForm) {
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 		grantedAuthorities.add(new SimpleGrantedAuthority(userForm.getProvider().toUpperCase()));

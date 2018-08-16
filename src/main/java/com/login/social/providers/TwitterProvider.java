@@ -4,6 +4,7 @@ import com.login.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -40,5 +41,16 @@ public class TwitterProvider {
         userForm.setLastName(twitterProfile.getName());
         userForm.setImage(twitterProfile.getProfileImageUrl());
         userForm.setProvider(TWITTER);
+    }
+
+    public UserBean populateUserDetailsFromTwitter(String token, UserBean userForm) {
+        org.springframework.social.twitter.api.Twitter twitter = new TwitterTemplate(token);
+        TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();
+        userForm.setEmail(twitterProfile.getProfileUrl());
+        userForm.setFirstName(twitterProfile.getName());
+        userForm.setLastName(twitterProfile.getName());
+        userForm.setImage(twitterProfile.getProfileImageUrl());
+        userForm.setProvider(TWITTER);
+        return userForm;
     }
 }

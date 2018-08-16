@@ -1,24 +1,21 @@
 package com.login.controller;
 
 import com.login.autologin.Autologin;
+import com.login.config.InstagramConfig;
 import com.login.config.LineConfig;
-import com.login.model.LineEntityProfile;
-import com.login.model.LineEntityRepos;
 import com.login.model.UserBean;
 import com.login.repository.UserRepository;
 import com.login.social.providers.*;
 import com.login.util.Constant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -39,7 +36,7 @@ public class LoginController {
     LinkedInProvider linkedInProvider;
 
     @Autowired
-    TwitterProvider twitterProviderProvider;
+    TwitterProvider twitterProvider;
 
     @Autowired
     private UserRepository userRepository;
@@ -52,8 +49,12 @@ public class LoginController {
 
     @Autowired
     InstagramProvider instagramProvider;
+
     @Autowired
     LineConfig lineConfig;
+
+    @Autowired
+    InstagramConfig instagramConfig;
 
     @ResponseBody
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
@@ -62,9 +63,21 @@ public class LoginController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/facebookToken", method = RequestMethod.GET)
+    public ResponseEntity<UserBean> loginFbbyToken(@RequestParam String token){
+        return new ResponseEntity<UserBean>(facebookProvider.populateUserDetailsFromFacebook(token, new UserBean()),HttpStatus.OK);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/google", method = RequestMethod.GET)
     public UserBean loginToGoogle() {
         return googleProvider.getGoogleUserData(new UserBean());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/googleToken", method = RequestMethod.GET)
+    public ResponseEntity<UserBean> loginGgbyToken(@RequestParam String token){
+        return new ResponseEntity<UserBean>(googleProvider.populateUserDetailsFromGoogle(token, new UserBean()),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/linkedin", method = RequestMethod.GET)
@@ -74,7 +87,12 @@ public class LoginController {
 
     @RequestMapping(value = "/twitter", method = RequestMethod.GET)
     public String helloTwiter(Model model) {
-        return twitterProviderProvider.getTwitterUserData(model, new UserBean());
+        return twitterProvider.getTwitterUserData(model, new UserBean());
+    }
+    @ResponseBody
+    @RequestMapping(value = "/twitterToken", method = RequestMethod.GET)
+    public ResponseEntity<UserBean> loginTwitterbyToken(@RequestParam String token){
+        return new ResponseEntity<UserBean>(twitterProvider.populateUserDetailsFromTwitter(token, new UserBean()),HttpStatus.OK);
     }
 
     /*Login using instagram*/
@@ -86,7 +104,8 @@ public class LoginController {
 
     @RequestMapping(value = "/loginins", method = RequestMethod.GET)
     public String loginIns() {
-        return "redirect:https://www.instagram.com/oauth/authorize/?client_id=49b3abf296714830a2d7ad57796030ca&redirect_uri=http://localhost:3000/instagram&response_type=code";
+        return "redirect:"+Constant.InstagramConst.urlAuthorize+"?"+Constant.InstagramConst.clientId+"="+instagramConfig.clientId+"&"+
+                Constant.InstagramConst.redirectUri+"="+instagramConfig.callBackUrl+"&"+Constant.InstagramConst.paramAuthorize;
     }
     /*Login using instagram*/
 
@@ -102,6 +121,12 @@ public class LoginController {
     @RequestMapping(value = "/line", method = RequestMethod.GET)
     public UserBean line(@RequestParam String code) {
         return lineProvider.loginLine(code, new UserBean());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/lineToken", method = RequestMethod.GET)
+    public UserBean lineToken(@RequestParam String token) {
+        return lineProvider.loginLineByToken(token, new UserBean());
     }
     /*Login using line*/
 
@@ -121,7 +146,6 @@ public class LoginController {
             return "registration";
         }
         userBean.setProvider("REGISTRATION");
-        // Save the details in DB
         if (StringUtils.isNotEmpty(userBean.getPassword())) {
             userBean.setPassword(bCryptPasswordEncoder.encode(userBean.getPassword()));
         }
@@ -131,9 +155,6 @@ public class LoginController {
         return "secure/user";
     }
 
-    /**
-     * If we can't find a user/email combination
-     */
     @RequestMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);

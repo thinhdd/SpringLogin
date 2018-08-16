@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.google.api.Google;
+import org.springframework.social.google.api.impl.GoogleTemplate;
 import org.springframework.social.google.api.plus.Person;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -28,7 +29,6 @@ public class GoogleProvider   {
 		populateUserDetailsFromGoogle(userForm);
 		//Save the details in DB
 		baseProvider.saveUserDetails(userForm);
-		//Login the User
 		baseProvider.autoLoginUser(userForm);
 		return userForm;
 	}
@@ -42,6 +42,19 @@ public class GoogleProvider   {
 		userform.setLastName(googleUser.getFamilyName());
 		userform.setImage("");
 		userform.setProvider(GOOGLE);
+	}
+
+	public UserBean populateUserDetailsFromGoogle(String token, UserBean userform) {
+		Google google = new GoogleTemplate(token);
+		Person googleUser = google.plusOperations().getGoogleProfile();
+		userform.setEmail(googleUser.getAccountEmail());
+		userform.setFirstName(googleUser.getGivenName());
+		userform.setLastName(googleUser.getFamilyName());
+		userform.setImage("");
+		userform.setProvider(GOOGLE);
+		baseProvider.saveUserDetails(userform);
+		baseProvider.autoLoginUser(userform);
+		return userform;
 	}
 
 }

@@ -12,8 +12,11 @@ import com.login.model.UserBean;
 @Service
 public class InstagramProvider {
     private static final String INSTAGRAM = "instagram";
+
     @Autowired
     BaseProvider baseProvider ;
+    @Autowired
+    InstagramBuildService instagramObj;
 
 	public UserBean getInstagramUserData(String code, UserBean userForm) throws Exception {
         populateUserDetailsFromInstagram(code, userForm);
@@ -23,10 +26,9 @@ public class InstagramProvider {
     }
 
     public void populateUserDetailsFromInstagram(String code, UserBean userBean ) throws Exception {
-        InstagramBuildService instagramObj = new InstagramBuildService();
         instagramObj.build();
-        Instagram instagram = instagramObj.getInstagram(code);
-        String token = instagram.getAccessToken().toString();
+        Instagram instagram = instagramObj.getInstagram(code);//verify token.
+        String token = instagram.getAccessToken().getToken();
         userBean.setAccesstoken(token);
         UserInfo userInfo = instagram.getCurrentUserInfo();
         userBean.setEmail(userInfo.getData().getUsername());
