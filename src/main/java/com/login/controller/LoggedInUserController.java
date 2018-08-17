@@ -1,5 +1,7 @@
 package com.login.controller;
 
+import com.login.model.UserBean;
+import com.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
-import com.login.model.UserBean;
-import com.login.repository.UserRepository;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class LoggedInUserController {
@@ -28,5 +28,12 @@ public class LoggedInUserController {
     public String securePage() {
 	return "secure/user";
     }
+
+    @ResponseBody
+    @GetMapping("/secure/test")
+    public String testP() {
+        return "secureuser";
+    }
+
 
 }

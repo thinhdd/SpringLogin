@@ -18,72 +18,74 @@ public class UserBean implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+	private String userId;
 	private String email;
-	
-	private String firstName;
-	
-	private String lastName;
-
-	private String title;
+	private String phoneNumber;
+	private String fullName;
 	private String country;
 	private String password;
-	
 	private String accesstoken;
-	
-	public String getAccesstoken() {
-		return accesstoken;
-	}
-
-	public void setAccesstoken(String accesstoken) {
-		this.accesstoken = accesstoken;
-	}
-
 	@Transient
 	private String passwordConfirm;	
 	private String provider;
-	private String image;
-	
-	
+	private String avatar;
+	private String gender;
+	private String favorits;
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getFavorits() {
+		return favorits;
+	}
+
+	public void setFavorits(String favorits) {
+		this.favorits = favorits;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getEmail() {
 		return email;
-	}
-
-	public String getImage() {
-	    return image;
-	}
-
-	public void setImage(String image) {
-	    this.image = image;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	
-	public String getPasswordConfirm() {
-		return passwordConfirm;
-	}
-
-	public void setPasswordConfirm(String passwordConfirm) {
-		this.passwordConfirm = passwordConfirm;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	public String getCountry() {
@@ -94,22 +96,29 @@ public class UserBean implements Serializable{
 		this.country = country;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getAccesstoken() {
+		return accesstoken;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setAccesstoken(String accesstoken) {
+		this.accesstoken = accesstoken;
 	}
 
+	public String getPasswordConfirm() {
+		return passwordConfirm;
+	}
+
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
+	}
 
 	public String getProvider() {
 		return provider;
@@ -119,6 +128,13 @@ public class UserBean implements Serializable{
 		this.provider = provider;
 	}
 
-	 
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 
 }

@@ -40,9 +40,9 @@ public class LineProvider {
         headers.set(Constant.LineConst.authorization, Constant.LineConst.bearer + lineEntityRepos.getAccess_token());
         HttpEntity<HttpHeaders> httpEntity1 = new HttpEntity<>(headers);
         LineEntityProfile lineEntityProfile = restTemplate.exchange(Constant.LineConst.urlProfile, HttpMethod.GET, httpEntity1, LineEntityProfile.class).getBody();
-        userBean.setFirstName(lineEntityProfile.getDisplayName());
-        userBean.setImage(lineEntityProfile.getPictureUrl());
-        userBean.setAccesstoken(lineEntityRepos.getAccess_token());
+        userBean.setFullName(lineEntityProfile.getDisplayName());
+        userBean.setAvatar(lineEntityProfile.getPictureUrl());
+        userBean.setUserId(lineEntityProfile.getUserId());
         userBean.setProvider(LINE);
         return userBean;
     }
@@ -52,8 +52,9 @@ public class LineProvider {
         headers.set(Constant.LineConst.authorization, Constant.LineConst.bearer + token);
         HttpEntity<HttpHeaders> httpEntity = new HttpEntity<>(headers);
         LineEntityProfile lineEntityProfile = restTemplate.exchange(Constant.LineConst.urlProfile, HttpMethod.GET, httpEntity, LineEntityProfile.class).getBody();
-        userBean.setFirstName(lineEntityProfile.getDisplayName());
-        userBean.setImage(lineEntityProfile.getPictureUrl());
+        userBean.setFullName(lineEntityProfile.getDisplayName());
+        userBean.setAvatar(lineEntityProfile.getPictureUrl());
+        userBean.setUserId(lineEntityProfile.getUserId());
         userBean.setAccesstoken(token);
         userBean.setProvider(LINE);
         return userBean;

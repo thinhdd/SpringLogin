@@ -67,13 +67,6 @@
 			<artifactId>spring-social-twitter</artifactId>
 			<version>1.1.2.RELEASE</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.grails.plugins/spring-social-instagram
-		<dependency>
-			<groupId>org.grails.plugins</groupId>
-			<artifactId>spring-social-instagram</artifactId>
-			<version>0.1</version>
-		</dependency>
--->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -148,7 +141,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>4.20</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

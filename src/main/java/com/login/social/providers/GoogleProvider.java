@@ -38,9 +38,10 @@ public class GoogleProvider   {
 		Google google = baseProvider.getGoogle();
 		Person googleUser = google.plusOperations().getGoogleProfile();
 		userform.setEmail(googleUser.getAccountEmail());
-		userform.setFirstName(googleUser.getGivenName());
-		userform.setLastName(googleUser.getFamilyName());
-		userform.setImage("");
+		userform.setUserId(googleUser.getId());
+		userform.setFullName(googleUser.getGivenName()+" "+googleUser.getFamilyName());
+		userform.setAvatar(googleUser.getImageUrl());
+		userform.setGender(googleUser.getGender());
 		userform.setProvider(GOOGLE);
 	}
 
@@ -48,9 +49,10 @@ public class GoogleProvider   {
 		Google google = new GoogleTemplate(token);
 		Person googleUser = google.plusOperations().getGoogleProfile();
 		userform.setEmail(googleUser.getAccountEmail());
-		userform.setFirstName(googleUser.getGivenName());
-		userform.setLastName(googleUser.getFamilyName());
-		userform.setImage("");
+		userform.setUserId(googleUser.getId());
+		userform.setFullName(googleUser.getGivenName()+" "+googleUser.getFamilyName());
+		userform.setAvatar(googleUser.getImageUrl());
+		userform.setGender(googleUser.getGender());
 		userform.setProvider(GOOGLE);
 		baseProvider.saveUserDetails(userform);
 		baseProvider.autoLoginUser(userform);

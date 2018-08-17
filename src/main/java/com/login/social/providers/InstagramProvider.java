@@ -25,17 +25,17 @@ public class InstagramProvider {
         return userForm;
     }
 
-    public void populateUserDetailsFromInstagram(String code, UserBean userBean ) throws Exception {
+    public void populateUserDetailsFromInstagram(String code, UserBean userform ) throws Exception {
         instagramObj.build();
         Instagram instagram = instagramObj.getInstagram(code);//verify token.
         String token = instagram.getAccessToken().getToken();
-        userBean.setAccesstoken(token);
+        userform.setAccesstoken(token);
         UserInfo userInfo = instagram.getCurrentUserInfo();
-        userBean.setEmail(userInfo.getData().getUsername());
-        userBean.setFirstName(userInfo.getData().getFirstName());
-        userBean.setLastName(userInfo.getData().getLastName());
-        userBean.setImage(userInfo.getData().getProfilePicture());
-        userBean.setProvider(INSTAGRAM);
+        userform.setEmail(userInfo.getData().getUsername());
+        userform.setUserId(userInfo.getData().getId());
+        userform.setFullName(userInfo.getData().getFullName());
+        userform.setAvatar(userInfo.getData().getProfilePicture());
+        userform.setProvider(INSTAGRAM);
     }
 
 

@@ -24,7 +24,6 @@ public class BaseProvider {
 
     private Facebook facebook;
     private Google google;
-    private LinkedIn linkedIn;
     private ConnectionRepository connectionRepository;
     private Twitter twitter;
 
@@ -37,10 +36,9 @@ public class BaseProvider {
     @Autowired
     protected Autologin autologin;
 
-    public BaseProvider(Facebook facebook, Google google, LinkedIn linkedIn, ConnectionRepository connectionRepository, Twitter twitter) {
+    public BaseProvider(Facebook facebook, Google google, ConnectionRepository connectionRepository, Twitter twitter) {
         this.facebook = facebook;
         this.google = google;
-        this.linkedIn = linkedIn;
         this.connectionRepository = connectionRepository;
         this.twitter = twitter;
     }
@@ -81,19 +79,18 @@ public class BaseProvider {
         this.google = google;
     }
 
-    public LinkedIn getLinkedIn() {
-        return linkedIn;
-    }
-
-    public void setLinkedIn(LinkedIn linkedIn) {
-        this.linkedIn = linkedIn;
-    }
-
     public Twitter getTwitter() {
         return twitter;
     }
 
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
+    }
+
+    public boolean checkLoginSocial(UserBean user) {
+        if (user.getUserId() != null){
+            return true;
+        }
+        return false;
     }
 }

@@ -3,13 +3,17 @@ package com.login.controller;
 import com.login.autologin.Autologin;
 import com.login.config.InstagramConfig;
 import com.login.config.LineConfig;
+import com.login.model.RequestLogin;
+import com.login.model.ResponseEntityBase;
 import com.login.model.UserBean;
 import com.login.repository.UserRepository;
 import com.login.social.providers.*;
 import com.login.util.Constant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -31,9 +35,6 @@ public class LoginController {
 
     @Autowired
     GoogleProvider googleProvider;
-
-    @Autowired
-    LinkedInProvider linkedInProvider;
 
     @Autowired
     TwitterProvider twitterProvider;
@@ -63,41 +64,19 @@ public class LoginController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/facebookToken", method = RequestMethod.GET)
-    public ResponseEntity<UserBean> loginFbbyToken(@RequestParam String token){
-        return new ResponseEntity<UserBean>(facebookProvider.populateUserDetailsFromFacebook(token, new UserBean()),HttpStatus.OK);
-    }
-
-    @ResponseBody
     @RequestMapping(value = "/google", method = RequestMethod.GET)
     public UserBean loginToGoogle() {
         return googleProvider.getGoogleUserData(new UserBean());
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/googleToken", method = RequestMethod.GET)
-    public ResponseEntity<UserBean> loginGgbyToken(@RequestParam String token){
-        return new ResponseEntity<UserBean>(googleProvider.populateUserDetailsFromGoogle(token, new UserBean()),HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/linkedin", method = RequestMethod.GET)
-    public String helloFacebook(Model model) {
-        return linkedInProvider.getLinkedInUserData(model, new UserBean());
     }
 
     @RequestMapping(value = "/twitter", method = RequestMethod.GET)
     public String helloTwiter(Model model) {
         return twitterProvider.getTwitterUserData(model, new UserBean());
     }
-    @ResponseBody
-    @RequestMapping(value = "/twitterToken", method = RequestMethod.GET)
-    public ResponseEntity<UserBean> loginTwitterbyToken(@RequestParam String token){
-        return new ResponseEntity<UserBean>(twitterProvider.populateUserDetailsFromTwitter(token, new UserBean()),HttpStatus.OK);
-    }
 
     /*Login using instagram*/
     @ResponseBody
-    @RequestMapping(value = "/instagram", method = RequestMethod.GET)
+    @RequestMapping(value = "/instagram", method = RequestMethod.POST)
     public UserBean helloInstagram(@RequestParam String code) throws Exception {
         return instagramProvider.getInstagramUserData(code, new UserBean());
     }
@@ -123,11 +102,6 @@ public class LoginController {
         return lineProvider.loginLine(code, new UserBean());
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/lineToken", method = RequestMethod.GET)
-    public UserBean lineToken(@RequestParam String token) {
-        return lineProvider.loginLineByToken(token, new UserBean());
-    }
     /*Login using line*/
 
     @RequestMapping(value = {"/", "/login"})
@@ -159,6 +133,21 @@ public class LoginController {
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
         return "login";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/loginSocialByToken", method = RequestMethod.POST)
+    public ResponseEntity<ResponseEntityBase> loginSocialByToken(@RequestBody RequestLogin requestLogin) throws Exception{
+        ResponseEntityBase<UserBean> responseEntityBase;
+        switch (requestLogin.getType()){
+            case "FACEBOOK": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),facebookProvider.populateUserDetailsFromFacebook(requestLogin.getToken(), new UserBean())); break;
+            case "GOOGLE": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),googleProvider.populateUserDetailsFromGoogle(requestLogin.getToken(), new UserBean())); break;
+            case "TWITTER": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),twitterProvider.populateUserDetailsFromTwitter(requestLogin.getToken(), new UserBean())); break;
+            case "INSTAGRAM": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),instagramProvider.getInstagramUserData(requestLogin.getToken(), new UserBean())); break;
+            case "LINE": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),lineProvider.loginLineByToken(requestLogin.getToken(), new UserBean())); break;
+            default: responseEntityBase = new ResponseEntityBase<>("",HttpStatus.BAD_REQUEST.value(),null); break;
+        }
+        return new ResponseEntity<ResponseEntityBase>(responseEntityBase,HttpStatus.OK);
     }
 
 }

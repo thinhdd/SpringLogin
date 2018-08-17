@@ -33,24 +33,22 @@ public class TwitterProvider {
         return "secure/user";
     }
 
-    protected void populateUserDetailsFromTwitter(UserBean userForm) {
+    protected void populateUserDetailsFromTwitter(UserBean userform) {
         org.springframework.social.twitter.api.Twitter twitter = baseProvider.getTwitter();
         TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();
-        userForm.setEmail(twitterProfile.getProfileUrl());
-        userForm.setFirstName(twitterProfile.getName());
-        userForm.setLastName(twitterProfile.getName());
-        userForm.setImage(twitterProfile.getProfileImageUrl());
-        userForm.setProvider(TWITTER);
+        userform.setUserId(Long.toString(twitterProfile.getId()));
+        userform.setFullName(twitterProfile.getName());
+        userform.setAvatar(twitterProfile.getProfileImageUrl());
+        userform.setProvider(TWITTER);
     }
 
-    public UserBean populateUserDetailsFromTwitter(String token, UserBean userForm) {
+    public UserBean populateUserDetailsFromTwitter(String token, UserBean userform) {
         org.springframework.social.twitter.api.Twitter twitter = new TwitterTemplate(token);
         TwitterProfile twitterProfile = twitter.userOperations().getUserProfile();
-        userForm.setEmail(twitterProfile.getProfileUrl());
-        userForm.setFirstName(twitterProfile.getName());
-        userForm.setLastName(twitterProfile.getName());
-        userForm.setImage(twitterProfile.getProfileImageUrl());
-        userForm.setProvider(TWITTER);
-        return userForm;
+        userform.setUserId(Long.toString(twitterProfile.getId()));
+        userform.setFullName(twitterProfile.getName());
+        userform.setAvatar(twitterProfile.getProfileImageUrl());
+        userform.setProvider(TWITTER);
+        return userform;
     }
 }
