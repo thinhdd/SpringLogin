@@ -1,6 +1,8 @@
 package com.login.security.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +34,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		 if (user == null) {
 	            throw new UsernameNotFoundException("No user found with email: " + email);
 	        }
-		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority("LOGGED_USER"));
+		List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
+			grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_LOGGED_USER"));
 		return new User(user.getEmail(), user.getPassword(), grantedAuthorities);
 	}
 }

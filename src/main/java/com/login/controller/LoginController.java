@@ -11,9 +11,7 @@ import com.login.social.providers.*;
 import com.login.util.Constant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -124,7 +122,7 @@ public class LoginController {
             userBean.setPassword(bCryptPasswordEncoder.encode(userBean.getPassword()));
         }
         userRepository.save(userBean);
-        autologin.setSecuritycontext(userBean);
+        autologin.setSecuritySocialContext(userBean);
         model.addAttribute("loggedInUser", userBean);
         return "secure/user";
     }
@@ -140,7 +138,7 @@ public class LoginController {
     public ResponseEntity<ResponseEntityBase> loginSocialByToken(@RequestBody RequestLogin requestLogin) throws Exception{
         ResponseEntityBase<UserBean> responseEntityBase;
         switch (requestLogin.getType()){
-            case "FACEBOOK": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),facebookProvider.populateUserDetailsFromFacebook(requestLogin.getToken(), new UserBean())); break;
+            case "FACEBOOK": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),facebookProvider.populateUserDetailsFromFacebook(requestLogin.getToken())); break;
             case "GOOGLE": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),googleProvider.populateUserDetailsFromGoogle(requestLogin.getToken(), new UserBean())); break;
             case "TWITTER": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),twitterProvider.populateUserDetailsFromTwitter(requestLogin.getToken(), new UserBean())); break;
             case "INSTAGRAM": responseEntityBase = new ResponseEntityBase<>("",HttpStatus.OK.value(),instagramProvider.getInstagramUserData(requestLogin.getToken(), new UserBean())); break;

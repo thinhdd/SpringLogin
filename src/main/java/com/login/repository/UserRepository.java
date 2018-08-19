@@ -6,6 +6,7 @@ import com.login.model.UserBean;
 public interface UserRepository extends JpaRepository<UserBean, String> {
 
     	UserBean findByEmail(String email);
+    	UserBean findByUserId(String userId);
 
 }
 

@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.google.api.Google;
-import org.springframework.social.linkedin.api.LinkedIn;
 
 import com.login.autologin.Autologin;
 import com.login.model.UserBean;
@@ -52,7 +51,7 @@ public class BaseProvider {
     }
 
     public void autoLoginUser(UserBean userBean) {
-        autologin.setSecuritycontext(userBean);
+        autologin.setSecuritySocialContext(userBean);
     }
 
     public Facebook getFacebook() {

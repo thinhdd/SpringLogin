@@ -1,5 +1,6 @@
 package com.login.social.providers;
 
+import com.login.repository.UserRepository;
 import com.login.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ public class FacebookProvider {
     BaseProvider baseProvider;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    UserRepository userRepository;
 
     public UserBean getFacebookUserData(UserBean userForm) {
         ConnectionRepository connectionRepository = baseProvider.getConnectionRepository();
@@ -46,22 +49,28 @@ public class FacebookProvider {
         userForm.setGender(user.getGender());
         userForm.setProvider(FACEBOOK);
     }
-    public UserBean populateUserDetailsFromFacebook(String token, UserBean userForm) {
-        String result = "";
+    public UserBean populateUserDetailsFromFacebook(String token) throws Exception {
         Facebook facebook = new FacebookTemplate(token);
         String[] fields = {"id", "cover", "birthday", "email", "gender", "name"};
         User user = facebook.fetchObject("me", User.class, fields);
-        userForm.setEmail(user.getEmail());
-        userForm.setUserId(user.getId());
-        userForm.setFullName(user.getName());
-        userForm.setAvatar(user.getCover() == null ? "" : user.getCover().getSource());
-        userForm.setGender(user.getGender());
-        userForm.setProvider(FACEBOOK);
-        HttpStatus httpStatus = null;
+        if(user == null || user.getId()==null) {
+            throw new Exception("Token is invalid");
+        }
+        UserBean userBean = userRepository.findByUserId(user.getId());
+        if (userBean == null) {
+            userBean = new UserBean();
+        }
+        userBean.setEmail(user.getEmail());
+        userBean.setUserId(user.getId());
+        userBean.setFullName(user.getName());
+        userBean.setAvatar(user.getCover() == null ? "" : user.getCover().getSource());
+        userBean.setGender(user.getGender());
+        userBean.setProvider(FACEBOOK);
+        userBean.setPassword(FACEBOOK);
         try {
-            if (baseProvider.checkLoginSocial(userForm)) {
-                result = jwtService.generateTokenLogin(userForm.getEmail());
-                userForm.setAccesstoken(result);
+            if (baseProvider.checkLoginSocial(userBean)) {
+                String result = jwtService.generateTokenLogin(userBean.getEmail());
+                userBean.setAccesstoken(result);
             } else {
                 return null;
             }
@@ -69,8 +78,8 @@ public class FacebookProvider {
             ex.printStackTrace();
             return null;
         }
-        baseProvider.saveUserDetails(userForm);
-        baseProvider.autoLoginUser(userForm);
-        return userForm;
+        baseProvider.saveUserDetails(userBean);
+        baseProvider.autoLoginUser(userBean);
+        return userBean;
     }
 }

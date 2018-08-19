@@ -14,7 +14,14 @@ import com.login.model.UserBean;
 
 @Service
 public class Autologin {
-    public void setSecuritycontext(UserBean userForm) {
+    public void setSecuritySocialContext(UserBean userForm) {
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+		grantedAuthorities.add(new SimpleGrantedAuthority(userForm.getProvider().toUpperCase()));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userForm.getUserId(), userForm.getPassword(), grantedAuthorities);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    public void setSecurityContext(UserBean userForm) {
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 		grantedAuthorities.add(new SimpleGrantedAuthority(userForm.getProvider().toUpperCase()));
 		Authentication authentication = new UsernamePasswordAuthenticationToken(userForm.getEmail(), userForm.getPassword(), grantedAuthorities);

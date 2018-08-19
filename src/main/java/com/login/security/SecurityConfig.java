@@ -21,21 +21,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 
 	@Override
-/*	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/css/**", "/connect/**").permitAll()
-				.antMatchers("/secure/**")
-				.authenticated()
-				.and()
-				.formLogin()
-				.loginPage("/login")
-				.defaultSuccessUrl("/secure/user")
-				.failureUrl("/login-error")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll();
-		http.csrf().disable();
-	}*/
     protected void configure(HttpSecurity http) throws Exception {
     // Disable crsf cho đường dẫn /rest/**
     http.csrf().ignoringAntMatchers("/**");
@@ -43,10 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.antMatcher("/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/secure/**")
-			.access("hasRole('LOGGED_USER')")
-            //.antMatchers(HttpMethod.POST, "/**").access("hasRole('ROLE_ADMIN')")
-            //.antMatchers(HttpMethod.DELETE, "/**").access("hasRole('ROLE_ADMIN')")
+            .antMatchers(HttpMethod.GET, "/secure/**").hasRole("LOGGED_USER")
             .and()
             .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
@@ -55,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
